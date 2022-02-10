@@ -13,7 +13,7 @@ Runs a function in a separate thread by using a [Web Worker](https://developer.m
 
 ```js
 const runAsync = fn => {
-  let objectUrl = URL.createObjectURL(new Blob([`postMessage((${fn})());`]), {
+  const objectUrl = URL.createObjectURL(new Blob([`postMessage((${fn})());`]), {
       type: 'application/javascript; charset=utf-8'
     });
   const worker = new Worker(objectUrl);
