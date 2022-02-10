@@ -13,17 +13,18 @@ Runs a function in a separate thread by using a [Web Worker](https://developer.m
 
 ```js
 const runAsync = fn => {
-  const worker = new Worker(
-    URL.createObjectURL(new Blob([`postMessage((${fn})());`]), {
+  let objectUrl = URL.createObjectURL(new Blob([`postMessage((${fn})());`]), {
       type: 'application/javascript; charset=utf-8'
-    })
-  );
+    });
+  const worker = new Worker(objectUrl);
   return new Promise((res, rej) => {
     worker.onmessage = ({ data }) => {
       res(data), worker.terminate();
+      URL.revokeObjectURL(objectUrl);
     };
     worker.onerror = err => {
       rej(err), worker.terminate();
+      URL.revokeObjectURL(objectUrl);
     };
   });
 };
